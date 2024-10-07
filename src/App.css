@@ -1,0 +1,14 @@
+.card-custom {
+  background-color: brown !important;
+}
+.nav-link {
+  color: #333;
+  text-decoration: none;
+}
+
+.nav-link.active {
+  color: #007bff;
+  /* Highlight active link */
+  font-weight: bold;
+  /* Make it bold */
+}
