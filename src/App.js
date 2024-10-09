@@ -1,9 +1,13 @@
 import React from "react";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom"; // Corrected Import
+
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import Navbar from "./Components/Navbar/navbar";
 import Sidebar from "./Components/SideBar/sidebar";
 import Dashboard from "./Pages/Dashboard/dashboard";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom"; // Corrected Import
-import { ToastContainer } from "react-toastify";
+
 import CategoryPage from "./Pages/Categories/category_page";
 import AllAdmins from "./Pages/Admin/all_Admins";
 import Users from "./Pages/Users/Users";
