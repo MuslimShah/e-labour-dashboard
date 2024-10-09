@@ -1,5 +1,10 @@
 import React from "react";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom"; // Corrected Import
+import {
+  Route,
+  BrowserRouter as Router,
+  Routes,
+  useNavigate,
+} from "react-router-dom"; // Corrected Import
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,8 +19,19 @@ import Users from "./Pages/Users/Users";
 import Login from "./Pages/Authentication/login";
 import Otp from "./Pages/Authentication/otp";
 import ForgotPassword from "./Pages/Authentication/forgotPassword";
+import { useSelector } from "react-redux";
+import { useGetCurrentUserQuery } from "./features/Auth_Api_Slice";
 
 function App() {
+  const { token } = useSelector((state) => state.auth);
+  const { data, isLoading, error } = useGetCurrentUserQuery(token);
+  console.log(data);
+  console.log(error);
+
+  if (error) {
+    console.log(error);
+  }
+
   return (
     <Router>
       {" "}

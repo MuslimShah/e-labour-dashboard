@@ -21,16 +21,13 @@ function Login() {
       return;
     }
     try {
-      const res = await loginUser({ email, password });
-      if (res.error) {
-        throw new Error(res.error?.data?.msg);
-      }
-      dispatech(setUserToken(res.data.token));
-      // console.log(res.data.token);
+      const { token } = await loginUser({ email, password }).unwrap();
+
+      dispatech(setUserToken(token));
       setEmail("");
       setPassword("");
     } catch (err) {
-      toast.error(err.message || "Something went wrong.");
+      toast.error(err?.data?.msg || "Something went wrong.");
     }
   };
 

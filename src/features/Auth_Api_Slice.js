@@ -11,6 +11,15 @@ export const userApiSlice = apiSlice.injectEndpoints({
         };
       },
     }),
+    getCurrentUser: builder.query({
+      query: (token) => ({
+        url: `/user/show-me`,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
     // register: builder.mutation({
     //   query: (data) => ({
     //     url: `${USER_URL}/register`,
@@ -47,6 +56,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useLoginMutation,
+  useGetCurrentUserQuery,
   useLogoutMutation,
   useRegisterMutation,
   useForgotPasswordMutation,
