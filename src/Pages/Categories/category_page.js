@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+
 import Button from "../../Components/Button/button";
 import CreateForm from "../../Components/categoriesModal/create_form";
 import { useGetAllCategoriesQuery } from "../../features/Admin_Api_Slice";
-import { useSelector } from "react-redux";
 import Loading from "../../Components/ui/Loading";
 import ErrorMessage from "../../Components/ui/ErrorMessage";
 import CategoryItem from "./CategoryItem";
@@ -18,8 +19,6 @@ function CategoryPage() {
   if (isLoading) {
     return <Loading />;
   }
-
-  console.log(data);
 
   return (
     <div className="card">
@@ -49,7 +48,7 @@ function CategoryPage() {
                 <table id="order-listing" className="table">
                   <thead>
                     <tr>
-                      <th>SN0</th>
+                      <th>S_N0</th>
                       <th>Category Name</th>
                       <th>Per Hour Rate</th>
                       <th>Actions</th>
@@ -60,6 +59,8 @@ function CategoryPage() {
                       <CategoryItem
                         key={category._id}
                         {...category}
+                        token={token}
+                        onRefetch={refetch}
                         index={index + 1}
                       />
                     ))}

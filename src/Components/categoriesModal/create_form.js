@@ -38,16 +38,14 @@ function CreateForm({ showCreateModal, handleCloseCreateModal, onRefetch }) {
 
     try {
       const response = await createCategory({ data: formData, token }).unwrap();
-      console.log(response);
 
-      // setName("");
-      // setPerHourRate("");
+      setName("");
+      setPerHourRate("");
       setImage(null);
       handleCloseCreateModal();
       onRefetch();
+      toast.success(response.message || "Category Add successfully.");
     } catch (err) {
-      console.log(err);
-
       toast.error(err?.data?.msg || "Something went wrong.");
     }
   };

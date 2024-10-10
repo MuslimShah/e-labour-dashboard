@@ -1,11 +1,11 @@
-import { Modal } from "react-bootstrap";
-import Button from "../Button/button";
-import InputField from "../FormFields/input_field";
-
-import { useSelector } from "react-redux";
-import { useUpdateAdminMutation } from "../../features/Admin_Api_Slice";
-import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
+import { Modal } from "react-bootstrap";
+import InputField from "../FormFields/input_field";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+
+import Button from "../Button/button";
+import { useUpdateAdminMutation } from "../../features/Admin_Api_Slice";
 
 function EditAdmin({ showModal, handleCloseModal, onRefetch, admin }) {
   const [name, setName] = useState(admin.name || "");
@@ -34,7 +34,7 @@ function EditAdmin({ showModal, handleCloseModal, onRefetch, admin }) {
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     if (!name.trim().length || !email.trim().length || !contact.trim().length) {
-      toast.error("Category title and Per houre rate is required.");
+      toast.error("Admin name, email, and contact no is required.");
       return;
     }
 
@@ -51,14 +51,13 @@ function EditAdmin({ showModal, handleCloseModal, onRefetch, admin }) {
         id: admin._id,
       }).unwrap();
 
-      toast.success(response?.msg || "Admin updated successfully.");
-
       setEmail("");
       setName("");
       setImage(null);
       setContact("");
       handleCloseModal();
       onRefetch();
+      toast.success(response?.msg || "Admin updated successfully.");
     } catch (err) {
       toast.error(err?.data?.msg || "Something went wrong.");
     }

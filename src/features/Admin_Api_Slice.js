@@ -52,7 +52,7 @@ export const adminApiSlice = apiSlice.injectEndpoints({
       query: ({ token, id }) => {
         return {
           url: `/admin/delete-category/${id}`,
-          method: "DELTE",
+          method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -105,6 +105,8 @@ export const {
   useGetAllCategoriesQuery,
   useAddNewCategoryMutation,
   useAddNewAdminMutation,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
   useGetAllAdminQuery,
   useDelteAdminMutation,
   useUpdateAdminMutation,
