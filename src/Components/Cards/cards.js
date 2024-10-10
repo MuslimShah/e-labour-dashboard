@@ -10,12 +10,6 @@ function Cards({ title, total, days, percentage, icon }) {
             <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">{total}</h3>
             <i class={`${icon} icon-md text-muted mb-0 mb-md-3 mb-xl-0`}></i>
           </div>
-          <p class="mb-0 mt-2 text-warning">
-            {percentage}
-            <span class="text-black ml-1">
-              <small>({days})</small>
-            </span>
-          </p>
         </div>
       </div>
     </div>

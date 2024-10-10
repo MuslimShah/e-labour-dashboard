@@ -2,8 +2,67 @@ import { Modal } from "react-bootstrap";
 import Button from "../Button/button";
 import InputField from "../FormFields/input_field";
 
-function EditAdmin({ showModal, handleCloseModal }) {
-  // const fileInputRef = useRef(null);
+import { useSelector } from "react-redux";
+import { useUpdateAdminMutation } from "../../features/Admin_Api_Slice";
+import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+
+function EditAdmin({ showModal, handleCloseModal, onRefetch, admin }) {
+  const [name, setName] = useState(admin.name || "");
+  const [email, setEmail] = useState(admin.email || "");
+  const [contact, setContact] = useState(admin.contact || "");
+  const [image, setImage] = useState(null);
+  const { token } = useSelector((state) => state.auth);
+  const [updateAdmin, { isLoading }] = useUpdateAdminMutation(token);
+
+  // Handle image file change
+  const onImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && ["image/jpeg", "image/png", "image/jpg"].includes(file.type)) {
+      setImage(file);
+    } else {
+      toast.error("Please select a valid image file (JPEG, PNG, JPG).");
+      setImage(null);
+    }
+  };
+
+  useEffect(() => {
+    setName(admin.name);
+    setEmail(admin.email);
+    setContact(admin.contact);
+  }, [admin]);
+  const onSubmitHandler = async (event) => {
+    event.preventDefault();
+    if (!name.trim().length || !email.trim().length || !contact.trim().length) {
+      toast.error("Category title and Per houre rate is required.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("contact", contact);
+    formData.append("image", image);
+
+    try {
+      const response = await updateAdmin({
+        data: formData,
+        token,
+        id: admin._id,
+      }).unwrap();
+
+      toast.success(response?.msg || "Admin updated successfully.");
+
+      setEmail("");
+      setName("");
+      setImage(null);
+      setContact("");
+      handleCloseModal();
+      onRefetch();
+    } catch (err) {
+      toast.error(err?.data?.msg || "Something went wrong.");
+    }
+  };
 
   return (
     <Modal
@@ -14,75 +73,62 @@ function EditAdmin({ showModal, handleCloseModal }) {
     >
       <Modal.Header closeButton className="modal-header-custome">
         <Modal.Title id="example-modal-sizes-title-lg">
-          Create Admin
+          Update Admin Profile
         </Modal.Title>
       </Modal.Header>
       <Modal.Body
         className="Applicant-Service-body"
         style={{ paddingTop: "1rem" }}
       >
-        <form className="pt-3">
+        <form className="pt-3" onSubmit={onSubmitHandler}>
           <InputField
             type="text"
-            value=""
+            value={name}
             label="Name"
             name="name"
             placeholder="Write Your name"
             col_size="12"
             className="form-control form-control-lg"
-            onChange=""
-            onBlur=""
-            errors=""
-            touched=""
+            onChange={(e) => setName(e.target.value)}
           />
           <InputField
             type="email"
-            value=""
+            value={email}
             label="Email"
             name="email"
             placeholder="Write Your Email"
             col_size="12"
             className="form-control form-control-lg"
-            onChange=""
-            onBlur=""
-            errors=""
-            touched=""
+            onChange={(e) => setEmail(e.target.value)}
           />
           <InputField
-            type="password"
-            value=""
-            label="Password"
-            name="password"
+            type="text"
+            value={contact}
+            label="Contact"
+            name="contact"
             placeholder="Write Your password"
             col_size="12"
             className="form-control form-control-lg"
-            onChange=""
-            onBlur=""
-            errors=""
-            touched=""
+            onChange={(e) => setContact(e.target.value)}
           />
 
-          <div className="form-group">
-            <label htmlFor="fileInput">Upload Image</label>
+          <div className="col-md-6">
+            <label className="form-label">Profile Image (JPEG, PNG, JPG)</label>
             <input
-              id="fileInput"
               type="file"
-              className="form-control form-control-lg"
-              name="image"
-              // onChange={(event) => {
-              //   setFieldValue("image", event.target.files[0]);
-              // }}
-              // onBlur={handleBlur}
+              className="form-control"
+              accept="image/jpeg, image/png, image/jpg"
+              onChange={onImageChange}
             />
           </div>
 
           <div className="col-md-12 d-flex justify-content-end">
             <Button
-              name="Edit"
-              type="Add Admin"
+              name={isLoading ? "Please wait.." : "Update"}
+              type="submit"
               color="primary"
               width="20%"
-              disabled=""
+              disabled={isLoading}
             />
           </div>
         </form>

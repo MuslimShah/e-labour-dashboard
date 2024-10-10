@@ -1,17 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import React, { useState } from "react";
 import Button from "../../Components/Button/button";
-import Create_Form from "../../Components/categoriesModal/create_form";
-import EditForm from "../../Components/categoriesModal/edit_form";
+import CreateForm from "../../Components/categoriesModal/create_form";
+import { useGetAllCategoriesQuery } from "../../features/Admin_Api_Slice";
+import { useSelector } from "react-redux";
+import Loading from "../../Components/ui/Loading";
+import ErrorMessage from "../../Components/ui/ErrorMessage";
+import CategoryItem from "./CategoryItem";
 
 function CategoryPage() {
   const [showCreateModal, setshowCreateModal] = useState(false);
-  const [showEditModal, setshowEditModal] = useState(false);
+  const { token } = useSelector((state) => state.auth);
+  const { data, error, isLoading, refetch } = useGetAllCategoriesQuery(token);
 
   const handleshowCreateModal = () => setshowCreateModal(true);
   const handleCloseCreateModal = () => setshowCreateModal(false);
-  const handleshowEditModal = () => setshowEditModal(true);
-  const handleCloseEditModal = () => setshowEditModal(false);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  console.log(data);
+
   return (
     <div className="card">
       <div className="card-header card-custom d-flex justify-content-between">
@@ -24,59 +33,39 @@ function CategoryPage() {
           color="primary"
         />
 
-        <Create_Form
+        <CreateForm
           showCreateModal={showCreateModal}
           handleCloseCreateModal={handleCloseCreateModal}
+          onRefetch={refetch}
         />
       </div>
       <div className="card-body">
         <div className="row">
           <div className="col-12">
             <div className="table-responsive">
-              <div class="input-group">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="navbar-search-input"
-                  placeholder="Search now"
-                  aria-label="search"
-                  aria-describedby="search"
-                />
-              </div>
-              <table id="order-listing" className="table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>
-                      <div className="d-flex align-items-center justify-content-start">
-                        <div
-                          className="action-btn"
-                          onClick={handleshowEditModal}
-                        >
-                          <FaEdit /> <span className="ml-2">VIEW</span>
-                        </div>
-                        <EditForm
-                          showEditModal={showEditModal}
-                          handleCloseEditModal={handleCloseEditModal}
-                        />
-                        <div className="trash-btn ">
-                          <FaTrash /> <span className="ml-2">DELETE</span>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              {error ? (
+                <ErrorMessage message={error?.data?.msg} />
+              ) : (
+                <table id="order-listing" className="table">
+                  <thead>
+                    <tr>
+                      <th>SN0</th>
+                      <th>Category Name</th>
+                      <th>Per Hour Rate</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.categories.map((category, index) => (
+                      <CategoryItem
+                        key={category._id}
+                        {...category}
+                        index={index + 1}
+                      />
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         </div>

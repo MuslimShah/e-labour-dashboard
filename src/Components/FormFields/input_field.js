@@ -17,13 +17,13 @@ function InputField({
     <div className={`col-md-${col_size}`}>
       <div className="form-group row">
         <div className="col-sm-12">
-          <label htmlFor="exampleFormControlTextarea1">{label}</label>
+          <label htmlFor={name}>{label}</label>
           <input
             type={type}
             name={name}
             className={className ? className : `form-control`}
             id={name}
-            placeholder={placeholder ? placeholder : undefined}
+            placeholder={placeholder ? placeholder : label}
             value={value}
             onChange={onChange}
             onBlur={onBlur}

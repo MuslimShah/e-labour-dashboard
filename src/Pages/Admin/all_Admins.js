@@ -1,17 +1,23 @@
 import React, { useState } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
 import Button from "../../Components/Button/button";
 import AdminRegisteration from "../../Components/admin/admin_registeration";
-import EditAdmin from "../../Components/admin/edit_admin";
+import { useSelector } from "react-redux";
+import { useGetAllAdminQuery } from "../../features/Admin_Api_Slice";
+import ErrorMessage from "../../Components/ui/ErrorMessage";
+import AdminItem from "./AdminItem";
+import Loading from "../../Components/ui/Loading";
 
 function AllAdmins() {
+  const { token } = useSelector((state) => state.auth);
+  const { data, isLoading, error, refetch } = useGetAllAdminQuery(token);
   const [showCreateModal, setshowCreateModal] = useState(false);
-  const [showEditModal, setshowEditModal] = useState(false);
-
   const handleshowCreateModal = () => setshowCreateModal(true);
   const handleCloseCreateModal = () => setshowCreateModal(false);
-  const handleshowEditModal = () => setshowEditModal(true);
-  const handleCloseEditModal = () => setshowEditModal(false);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <div className="card">
       <div className="card-header card-custom d-flex justify-content-between">
@@ -29,6 +35,7 @@ function AllAdmins() {
           <AdminRegisteration
             showModal={showCreateModal}
             handleCloseModal={handleCloseCreateModal}
+            onRefetch={refetch}
           />
         </div>
       </div>
@@ -46,40 +53,32 @@ function AllAdmins() {
                   aria-describedby="search"
                 />
               </div>
-              <table id="order-listing" className="table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>
-                      <div className="d-flex align-items-center justify-content-start">
-                        <div
-                          className="action-btn"
-                          onClick={handleshowEditModal}
-                        >
-                          <FaEdit /> <span className="ml-2">VIEW</span>
-                        </div>
-                        <EditAdmin
-                          showModal={showEditModal}
-                          handleCloseModal={handleCloseEditModal}
-                        />
-                        <div className="trash-btn ">
-                          <FaTrash /> <span className="ml-2">DELETE</span>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              {error ? (
+                <ErrorMessage message={error?.data?.msg} />
+              ) : (
+                <table id="order-listing" className="table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Contact</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.admins.map((admin, index) => (
+                      <AdminItem
+                        key={admin._id}
+                        {...admin}
+                        token={token}
+                        index={index}
+                        onRefetch={refetch}
+                      />
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         </div>
