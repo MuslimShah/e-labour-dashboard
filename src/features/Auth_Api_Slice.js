@@ -20,46 +20,28 @@ export const userApiSlice = apiSlice.injectEndpoints({
         },
       }),
     }),
-    // register: builder.mutation({
-    //   query: (data) => ({
-    //     url: `${USER_URL}/register`,
-    //     method: "POST",
-    //     body: data,
-    //   }),
-    // }),
-    // registerWithGoogle: builder.mutation({
-    //   query: (data) => ({
-    //     url: `${USER_URL}/google`,
-    //     method: "POST",
-    //     body: data,
-    //   }),
-    // }),
-    // logout: builder.mutation({
-    //   query: () => ({ url: `${USER_URL}/logout`, method: "POST" }),
-    // }),
-    // forgotPassword: builder.mutation({
-    //   query: (data) => ({
-    //     url: `${USER_URL}/forgot-password`,
-    //     method: "POST",
-    //     body: data,
-    //   }),
-    // }),
-    // resetPassword: builder.mutation({
-    //   query: (data) => ({
-    //     url: `${USER_URL}/reset-password`,
-    //     method: "PUT",
-    //     body: data,
-    //   }),
-    // }),
+    forgotPassword: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/auth/forgot-password`,
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
+    resetPassword: builder.mutation({
+      query: (data) => ({
+        url: `/auth/reset-password`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
 export const {
   useLoginMutation,
   useGetCurrentUserQuery,
-  useLogoutMutation,
-  useRegisterMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
-  useRegisterWithGoogleMutation,
 } = userApiSlice;

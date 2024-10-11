@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 
@@ -9,6 +9,7 @@ import { useLoginMutation } from "../../features/Auth_Api_Slice";
 import { setUserToken } from "../../features/Auth_Slice";
 
 function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginUser, { isLoading }] = useLoginMutation();
@@ -26,6 +27,7 @@ function Login() {
       dispatech(setUserToken(token));
       setEmail("");
       setPassword("");
+      navigate("/");
     } catch (err) {
       toast.error(err?.data?.msg || "Something went wrong.");
     }

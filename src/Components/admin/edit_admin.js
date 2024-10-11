@@ -9,7 +9,6 @@ import { useUpdateAdminMutation } from "../../features/Admin_Api_Slice";
 
 function EditAdmin({ showModal, handleCloseModal, onRefetch, admin }) {
   const [name, setName] = useState(admin.name || "");
-  const [email, setEmail] = useState(admin.email || "");
   const [contact, setContact] = useState(admin.contact || "");
   const [image, setImage] = useState(null);
   const { token } = useSelector((state) => state.auth);
@@ -28,19 +27,17 @@ function EditAdmin({ showModal, handleCloseModal, onRefetch, admin }) {
 
   useEffect(() => {
     setName(admin.name);
-    setEmail(admin.email);
     setContact(admin.contact);
   }, [admin]);
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-    if (!name.trim().length || !email.trim().length || !contact.trim().length) {
-      toast.error("Admin name, email, and contact no is required.");
+    if (!name.trim().length || !contact.trim().length) {
+      toast.error("Admin name,  and contact no is required.");
       return;
     }
 
     const formData = new FormData();
     formData.append("name", name);
-    formData.append("email", email);
     formData.append("contact", contact);
     formData.append("image", image);
 
@@ -51,7 +48,6 @@ function EditAdmin({ showModal, handleCloseModal, onRefetch, admin }) {
         id: admin._id,
       }).unwrap();
 
-      setEmail("");
       setName("");
       setImage(null);
       setContact("");
@@ -90,16 +86,7 @@ function EditAdmin({ showModal, handleCloseModal, onRefetch, admin }) {
             className="form-control form-control-lg"
             onChange={(e) => setName(e.target.value)}
           />
-          <InputField
-            type="email"
-            value={email}
-            label="Email"
-            name="email"
-            placeholder="Write Your Email"
-            col_size="12"
-            className="form-control form-control-lg"
-            onChange={(e) => setEmail(e.target.value)}
-          />
+
           <InputField
             type="text"
             value={contact}

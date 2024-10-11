@@ -1,6 +1,17 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../features/Auth_Slice";
 
 function Navbar() {
+  const { userInfo, token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const logoutHandler = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
   return (
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
@@ -21,29 +32,27 @@ function Navbar() {
         </button>
 
         <ul class="navbar-nav navbar-nav-right">
-          <li class="nav-item nav-profile dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              data-toggle="dropdown"
-              id="profileDropdown"
-            >
-              <img src="https://via.placeholder.com/40x40" alt="profile" />
-            </a>
-            <div
-              class="dropdown-menu dropdown-menu-right navbar-dropdown"
-              aria-labelledby="profileDropdown"
-            >
-              <a class="dropdown-item">
-                <i class="ti-settings text-primary"></i>
-                Settings
-              </a>
-              <a class="dropdown-item">
-                <i class="ti-power-off text-primary"></i>
-                Logout
-              </a>
-            </div>
-          </li>
+          {token && (
+            <li class="nav-item nav-profile dropdown">
+              <p
+                class="nav-link dropdown-toggle"
+                href="#"
+                data-toggle="dropdown"
+                id="profileDropdown"
+              >
+                <img src={userInfo.image} alt={userInfo.name} />
+              </p>
+              <div
+                class="dropdown-menu dropdown-menu-right navbar-dropdown"
+                aria-labelledby="profileDropdown"
+              >
+                <p class="dropdown-item" onClick={logoutHandler}>
+                  <i class="ti-power-off text-primary"></i>
+                  Logout
+                </p>
+              </div>
+            </li>
+          )}
         </ul>
         <button
           class="navbar-toggler navbar-toggler-right d-lg-none align-self-center"

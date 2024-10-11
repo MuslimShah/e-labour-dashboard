@@ -2,32 +2,30 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../Components/Button/button";
 import InputField from "../../Components/FormFields/input_field";
-import { useForgotPasswordMutation } from "../../features/Auth_Api_Slice";
+import { useResetPasswordMutation } from "../../features/Auth_Api_Slice";
 import { toast } from "react-toastify";
 
-function ForgotPassword() {
+function ResetPassword() {
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
   const [email, setEmail] = useState("");
-  const navigate = useNavigate();
-  const [getOtp, { isLoading }] = useForgotPasswordMutation();
+  const [otp, setOtp] = useState("");
+  const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
   const submitHandler = async (e) => {
     e.preventDefault();
-    if (!email.trim().length) {
-      toast.error("Please provide email address.");
+    if (!email.trim().length || !password || !otp.trim().length) {
+      toast.error("Please provide valid data.");
       return;
     }
     try {
-      const response = await getOtp({ email }).unwrap();
-      toast.success(response?.message || "Admin deleted successfully.");
-      navigate("/reset-password");
-      console.log(response);
+      const response = await resetPassword({ email, otp, password }).unwrap();
+      toast.success(response?.message || "Password reset successfully.");
+      navigate("/login");
     } catch (err) {
-      console.log(err);
-
       toast.error(err?.data?.msg || "Something went wrong.");
     }
   };
-
   return (
     <div className="content-wrapper d-flex align-items-center auth px-0">
       <div className="row w-100 mx-0">
@@ -39,6 +37,16 @@ function ForgotPassword() {
             <h4 className="font-weight-dark">Enter Email For OTP</h4>
             <form className="pt-3" onSubmit={submitHandler}>
               <InputField
+                type="text"
+                value={otp}
+                label="OTP"
+                name="otp"
+                placeholder="Otp from email"
+                col_size="12"
+                className="form-control form-control-lg"
+                onChange={(e) => setOtp(e.target.value)}
+              />
+              <InputField
                 type="email"
                 value={email}
                 label="Email"
@@ -49,9 +57,19 @@ function ForgotPassword() {
                 onChange={(e) => setEmail(e.target.value)}
               />
 
+              <InputField
+                type="password"
+                value={password}
+                label="New Password"
+                name="passwrod"
+                placeholder="Write your new password"
+                col_size="12"
+                className="form-control form-control-lg"
+                onChange={(e) => setPassword(e.target.value)}
+              />
               <div className="col-md-12 d-flex justify-content-end">
                 <Button
-                  name={isLoading ? "Please wait..." : "Get OTP"}
+                  name={isLoading ? "Please wait.." : "Reset Password"}
                   type="submit"
                   color="primary"
                   width="100%"
@@ -66,4 +84,4 @@ function ForgotPassword() {
   );
 }
 
-export default ForgotPassword;
+export default ResetPassword;
